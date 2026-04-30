@@ -44,7 +44,7 @@ Resource Group: rg-learn-phase7
 ## Step 1 — Create Resource Group
 
 ```bash
-az group create --name rg-learn-phase7 --location eastus
+az group create --name rg-learn-phase7 --location centralus
 ```
 
 ---

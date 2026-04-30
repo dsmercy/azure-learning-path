@@ -19,7 +19,7 @@ Resource Group: rg-learn-phase6
 ## Step 1 — Create Resource Group
 
 ```bash
-az group create --name rg-learn-phase6 --location eastus
+az group create --name rg-learn-phase6 --location centralus
 ```
 
 ---
@@ -30,7 +30,7 @@ az group create --name rg-learn-phase6 --location eastus
 az monitor log-analytics workspace create \
   --workspace-name law-learning \
   --resource-group rg-learn-phase6 \
-  --location eastus \
+  --location centralus \
   --sku PerGB2018
 ```
 
@@ -55,7 +55,7 @@ LAW_ID=$(az monitor log-analytics workspace show \
 az monitor app-insights component create \
   --app ai-taskmanager \
   --resource-group rg-learn-phase6 \
-  --location eastus \
+  --location centralus \
   --workspace $LAW_ID \
   --kind web
 ```

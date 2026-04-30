@@ -20,7 +20,7 @@ Resource Group: rg-learn-phase5
 ## Step 1 — Create Resource Group and App Service
 
 ```bash
-az group create --name rg-learn-phase5 --location eastus
+az group create --name rg-learn-phase5 --location centralus
 
 az appservice plan create \
   --name plan-phase5 \
@@ -42,7 +42,7 @@ az webapp create \
 az keyvault create \
   --name kv-learning-YOURNAME \
   --resource-group rg-learn-phase5 \
-  --location eastus \
+  --location centralus \
   --enable-rbac-authorization true
 ```
 

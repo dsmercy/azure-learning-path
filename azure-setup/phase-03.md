@@ -38,7 +38,7 @@ Resource Group: rg-learn-phase3
 ## Step 1 — Create Resource Group
 
 ```bash
-az group create --name rg-learn-phase3 --location eastus
+az group create --name rg-learn-phase3 --location centralus
 ```
 
 ---
@@ -51,7 +51,7 @@ Functions runtime requires a storage account for coordination.
 az storage account create \
   --name stfunclearningYOURNAME \
   --resource-group rg-learn-phase3 \
-  --location eastus \
+  --location centralus \
   --sku Standard_LRS
 ```
 
@@ -101,7 +101,7 @@ az functionapp create \
   --name func-taskprocessing-YOURNAME \
   --resource-group rg-learn-phase3 \
   --storage-account stfunclearningYOURNAME \
-  --consumption-plan-location eastus \
+  --consumption-plan-location centralus \
   --runtime dotnet-isolated \
   --runtime-version 8 \
   --functions-version 4

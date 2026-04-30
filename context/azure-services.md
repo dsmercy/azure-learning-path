@@ -109,7 +109,7 @@ az account show --output table               # Confirm current subscription
 
 ### Resource Groups
 ```bash
-az group create --name rg-name --location eastus
+az group create --name rg-name --location centralus
 az group list --output table
 az group show --name rg-name
 az group delete --name rg-name --yes --no-wait    # Async delete
@@ -149,7 +149,7 @@ az webapp identity assign --name app-name --resource-group rg-name
 ```bash
 # Create server
 az sql server create --name sql-name --resource-group rg-name \
-  --location eastus --admin-user sqladmin --admin-password "Pass@word123!"
+  --location centralus --admin-user sqladmin --admin-password "Pass@word123!"
 
 # Create database (serverless — cheapest for learning)
 az sql db create --resource-group rg-name --server sql-name --name db-name \
@@ -173,7 +173,7 @@ az sql db show-connection-string --server sql-name --name db-name --client ado.n
 ```bash
 # Create storage account (name: lowercase+numbers, no hyphens, globally unique)
 az storage account create --name stname --resource-group rg-name \
-  --location eastus --sku Standard_LRS
+  --location centralus --sku Standard_LRS
 
 # Get connection string
 az storage account show-connection-string --name stname --resource-group rg-name -o tsv
@@ -210,7 +210,7 @@ az cosmosdb keys list --name cosmos-name --resource-group rg-name \
 ```bash
 # Create
 az keyvault create --name kv-name --resource-group rg-name \
-  --location eastus --enable-rbac-authorization true
+  --location centralus --enable-rbac-authorization true
 
 # Get your Object ID
 MY_OID=$(az ad signed-in-user show --query id -o tsv)
@@ -237,7 +237,7 @@ az role assignment create --assignee $MI_OID \
 ```bash
 # Create Function App
 az functionapp create --name func-name --resource-group rg-name \
-  --storage-account stname --consumption-plan-location eastus \
+  --storage-account stname --consumption-plan-location centralus \
   --runtime dotnet-isolated --runtime-version 8 --functions-version 4
 
 # Deploy
@@ -251,14 +251,14 @@ az functionapp deployment list --name func-name --resource-group rg-name
 ```bash
 # Create Log Analytics workspace first
 az monitor log-analytics workspace create \
-  --workspace-name law-name --resource-group rg-name --location eastus
+  --workspace-name law-name --resource-group rg-name --location centralus
 
 LAW_ID=$(az monitor log-analytics workspace show \
   --workspace-name law-name --resource-group rg-name --query id -o tsv)
 
 # Create App Insights connected to workspace
 az monitor app-insights component create \
-  --app ai-name --resource-group rg-name --location eastus \
+  --app ai-name --resource-group rg-name --location centralus \
   --workspace $LAW_ID --kind web
 
 # Get connection string
@@ -271,7 +271,7 @@ az monitor app-insights component show \
 ```bash
 # Create namespace (Basic = queues only; Standard = + topics)
 az servicebus namespace create --name sbns-name --resource-group rg-name \
-  --location eastus --sku Basic
+  --location centralus --sku Basic
 
 # Create queue
 az servicebus queue create --name my-queue \

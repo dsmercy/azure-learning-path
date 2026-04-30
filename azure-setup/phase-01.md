@@ -85,7 +85,7 @@ A resource group is a logical container. Deleting it deletes everything inside.
 ```bash
 az group create \
   --name rg-learn-phase1 \
-  --location eastus
+  --location centralus
 ```
 
 Expected output: `"provisioningState": "Succeeded"`
@@ -149,7 +149,7 @@ This creates the logical SQL server (not a VM — it's a managed service).
 az sql server create \
   --name sql-taskmanager-dev \
   --resource-group rg-learn-phase1 \
-  --location eastus \
+  --location centralus \
   --admin-user sqladmin \
   --admin-password "AzLearn@2024!Secure"
 ```

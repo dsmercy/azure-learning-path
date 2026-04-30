@@ -34,7 +34,7 @@ Resource Group: rg-learn-phase4
 ## Step 1 — Create Resource Group
 
 ```bash
-az group create --name rg-learn-phase4 --location eastus
+az group create --name rg-learn-phase4 --location centralus
 ```
 
 ---
@@ -45,7 +45,7 @@ az group create --name rg-learn-phase4 --location eastus
 az servicebus namespace create \
   --name sbns-learning-YOURNAME \
   --resource-group rg-learn-phase4 \
-  --location eastus \
+  --location centralus \
   --sku Basic
 ```
 
@@ -101,7 +101,7 @@ az servicebus namespace authorization-rule keys list \
 az eventgrid topic create \
   --name egt-learning-events \
   --resource-group rg-learn-phase4 \
-  --location eastus
+  --location centralus
 ```
 
 **Concepts:**
@@ -138,7 +138,7 @@ az eventgrid topic key list \
 az eventhubs namespace create \
   --name ehns-learning-YOURNAME \
   --resource-group rg-learn-phase4 \
-  --location eastus \
+  --location centralus \
   --sku Basic
 ```
 

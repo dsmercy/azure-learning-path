@@ -21,7 +21,7 @@ Resource Group: rg-learn-phase2
 ## Step 1 — Create Resource Group
 
 ```bash
-az group create --name rg-learn-phase2 --location eastus
+az group create --name rg-learn-phase2 --location centralus
 ```
 
 ---
@@ -37,7 +37,7 @@ Storage account names must be **globally unique**, **3–24 characters**, **lowe
 az storage account create \
   --name stlearningYOURINITIALS001 \
   --resource-group rg-learn-phase2 \
-  --location eastus \
+  --location centralus \
   --sku Standard_LRS \
   --kind StorageV2 \
   --access-tier Hot
