@@ -1,0 +1,63 @@
+# ── Secrets & Local Config (NEVER commit these) ──────────────────────────────
+appsettings.Development.json
+appsettings.*.json
+!appsettings.json
+local.settings.json
+.env
+.env.*
+secrets.json
+
+# ── Build Output ──────────────────────────────────────────────────────────────
+bin/
+obj/
+publish/
+*.zip
+deploy.zip
+
+# ── Visual Studio ─────────────────────────────────────────────────────────────
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.userprefs
+.vscode/settings.json
+
+# ── Rider ─────────────────────────────────────────────────────────────────────
+.idea/
+*.sln.iml
+
+# ── .NET ──────────────────────────────────────────────────────────────────────
+*.nupkg
+*.snupkg
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# ── Node (if any frontend) ────────────────────────────────────────────────────
+node_modules/
+npm-debug.log*
+yarn-error.log*
+dist/
+
+# ── Docker ────────────────────────────────────────────────────────────────────
+*.env
+
+# ── Azure Functions ───────────────────────────────────────────────────────────
+local.settings.json
+.python_packages/
+
+# ── OS ────────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Test Results ──────────────────────────────────────────────────────────────
+TestResults/
+*.trx
+coverage/
+*.coverage
+
+# ── Logs ──────────────────────────────────────────────────────────────────────
+*.log
+logs/
