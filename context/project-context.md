@@ -21,7 +21,7 @@ Subscription    : PLACEHOLDER — paste your subscription name here
 Subscription ID : PLACEHOLDER
 Subscription Name: PLACEHOLDER
 Tenant ID       : PLACEHOLDER
-Region          : eastus   (change if you prefer another region)
+Region          : centralus   (change if you prefer another region)
 ```
 
 To fill these in, run:

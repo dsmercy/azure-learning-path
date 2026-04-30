@@ -35,7 +35,7 @@ Open a terminal and set these once. All subsequent commands use them.
 
 ```bash
 RG="rg-learn-capstone"
-LOCATION="eastus"
+LOCATION="centralus"
 SUFFIX="YOUR-SUFFIX"   # e.g. your initials + 4 digits: jd2048
 ```
 

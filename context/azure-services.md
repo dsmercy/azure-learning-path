@@ -190,7 +190,7 @@ az storage container create --name uploads --account-name stname \
 # Create account (serverless)
 az cosmosdb create --name cosmos-name --resource-group rg-name \
   --kind GlobalDocumentDB --capabilities EnableServerless \
-  --locations regionName=eastus failoverPriority=0
+  --locations regionName=centralus failoverPriority=0
 
 # Create database
 az cosmosdb sql database create --account-name cosmos-name \

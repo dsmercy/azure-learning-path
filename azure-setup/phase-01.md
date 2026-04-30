@@ -90,7 +90,7 @@ az group create \
 
 Expected output: `"provisioningState": "Succeeded"`
 
-**Why eastus?** It has the widest free-tier availability. You can use `westeurope` or `southeastasia` if you prefer.
+**Why centralus?** It has the widest free-tier availability. You can use `westeurope` or `southeastasia` if you prefer.
 
 ---
 

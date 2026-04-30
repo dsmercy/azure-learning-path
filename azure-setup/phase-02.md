@@ -34,13 +34,7 @@ Storage account names must be **globally unique**, **3–24 characters**, **lowe
 # Pick a unique name: st + your initials + random number
 # Example: stlearningjd4829
 
-az storage account create \
-  --name stlearningYOURINITIALS001 \
-  --resource-group rg-learn-phase2 \
-  --location centralus \
-  --sku Standard_LRS \
-  --kind StorageV2 \
-  --access-tier Hot
+az storage account create --name stlearningds001 --resource-group rg-learn-phase2 --location centralus --sku Standard_LRS --kind StorageV2 --access-tier Hot
 ```
 
 **Tier explanation:**
@@ -54,18 +48,12 @@ az storage account create \
 
 ```bash
 # Get the account key
-STORAGE_KEY=$(az storage account keys list \
-  --resource-group rg-learn-phase2 \
-  --account-name stlearningYOURINITIALS001 \
-  --query "[0].value" -o tsv)
+$STORAGE_KEY=$(az storage account keys list --resource-group rg-learn-phase2 --account-name stlearningds002 --query "[0].value" -o tsv)
 
 echo "Key: $STORAGE_KEY"
 
 # Get connection string
-az storage account show-connection-string \
-  --resource-group rg-learn-phase2 \
-  --name stlearningYOURINITIALS001 \
-  -o tsv
+az storage account show-connection-string --resource-group rg-learn-phase2 --name stlearningds002 -o tsv
 ```
 
 **Copy the connection string to `context/project-context.md`.**
@@ -75,11 +63,7 @@ az storage account show-connection-string \
 ## Step 4 — Create Blob Container
 
 ```bash
-az storage container create \
-  --name uploads \
-  --account-name stlearningYOURINITIALS001 \
-  --account-key $STORAGE_KEY \
-  --public-access off
+az storage container create --name uploads --account-name stlearningds002 --account-key $STORAGE_KEY --public-access off
 ```
 
 **`--public-access off`** means blobs are private. To download, you'll need either:
@@ -102,12 +86,7 @@ az storage container create \
 Cosmos DB account names must be **globally unique** and **lowercase**.
 
 ```bash
-az cosmosdb create \
-  --name cosmos-learning-YOURNAME \
-  --resource-group rg-learn-phase2 \
-  --kind GlobalDocumentDB \
-  --locations regionName=eastus failoverPriority=0 isZoneRedundant=False \
-  --capabilities EnableServerless
+az cosmosdb create --name cosmos-learning-demo --resource-group rg-learn-phase2 --kind GlobalDocumentDB --locations regionName=centralus failoverPriority=0 isZoneRedundant=False --capabilities EnableServerless
 ```
 
 > ⏳ This takes **3–5 minutes**. Wait for it to complete.
@@ -123,18 +102,10 @@ az cosmosdb create \
 
 ```bash
 # Create the database
-az cosmosdb sql database create \
-  --account-name cosmos-learning-YOURNAME \
-  --resource-group rg-learn-phase2 \
-  --name ProductCatalogDb
+az cosmosdb sql database create --account-name cosmos-learning-demo --resource-group rg-learn-phase2 --name ProductCatalogDb
 
 # Create the container with a partition key
-az cosmosdb sql container create \
-  --account-name cosmos-learning-YOURNAME \
-  --resource-group rg-learn-phase2 \
-  --database-name ProductCatalogDb \
-  --name Products \
-  --partition-key-path "/category"
+az cosmosdb sql container create --account-name cosmos-learning-demo --resource-group rg-learn-phase2 --database-name ProductCatalogDb --name Products --partition-key-path "/category"
 ```
 
 **What is a partition key?**
@@ -149,11 +120,7 @@ Cosmos DB splits data across physical storage partitions. The partition key deci
 ## Step 8 — Get Cosmos DB Connection String
 
 ```bash
-az cosmosdb keys list \
-  --name cosmos-learning-YOURNAME \
-  --resource-group rg-learn-phase2 \
-  --type connection-strings \
-  --query "connectionStrings[0].connectionString" -o tsv
+az cosmosdb keys list --name cosmos-learning-demo --resource-group rg-learn-phase2 --type connection-strings --query "connectionStrings[0].connectionString" -o tsv
 ```
 
 **Copy to `context/project-context.md`.**
