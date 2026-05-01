@@ -22,10 +22,10 @@
 
 ```
 Resource Group: rg-learn-phase4
-├── Service Bus Namespace: sbns-learning-XXXX  (Basic — queues only)
+├── Service Bus Namespace: sbns-learning-demo  (Basic — queues only)
 │   └── Queue: orders-queue
 ├── Event Grid Topic: egt-learning-events       (custom topic)
-└── Event Hubs Namespace: ehns-learning-XXXX    (Basic)
+└── Event Hubs Namespace: ehns-learning-demo    (Basic)
     └── Event Hub: telemetry-hub
 ```
 
@@ -42,11 +42,7 @@ az group create --name rg-learn-phase4 --location centralus
 ## Step 2 — Create Service Bus Namespace
 
 ```bash
-az servicebus namespace create \
-  --name sbns-learning-YOURNAME \
-  --resource-group rg-learn-phase4 \
-  --location centralus \
-  --sku Basic
+az servicebus namespace create --name sbns-learning-demo --resource-group rg-learn-phase4 --location centralus --sku Basic
 ```
 
 **Concepts:**
@@ -59,11 +55,7 @@ az servicebus namespace create \
 ## Step 3 — Create a Queue
 
 ```bash
-az servicebus queue create \
-  --name orders-queue \
-  --namespace-name sbns-learning-YOURNAME \
-  --resource-group rg-learn-phase4 \
-  --max-delivery-count 5
+az servicebus queue create --name orders-queue --namespace-name sbns-learning-demo --resource-group rg-learn-phase4 --max-delivery-count 5
 ```
 
 `--max-delivery-count 5` means: if processing fails 5 times, the message goes to the **dead-letter queue** (a holding area for failed messages you can inspect).
@@ -73,11 +65,7 @@ az servicebus queue create \
 ## Step 4 — Get Service Bus Connection String
 
 ```bash
-az servicebus namespace authorization-rule keys list \
-  --resource-group rg-learn-phase4 \
-  --namespace-name sbns-learning-YOURNAME \
-  --name RootManageSharedAccessKey \
-  --query "primaryConnectionString" -o tsv
+az servicebus namespace authorization-rule keys list --resource-group rg-learn-phase4 --namespace-name sbns-learning-demo --name RootManageSharedAccessKey --query "primaryConnectionString" -o tsv
 ```
 
 **Copy to `context/project-context.md`.**
@@ -98,10 +86,7 @@ az servicebus namespace authorization-rule keys list \
 ## Step 6 — Create Event Grid Topic
 
 ```bash
-az eventgrid topic create \
-  --name egt-learning-events \
-  --resource-group rg-learn-phase4 \
-  --location centralus
+az eventgrid topic create --name egt-learning-events --resource-group rg-learn-phase4 --location centralus
 ```
 
 **Concepts:**
@@ -116,16 +101,10 @@ az eventgrid topic create \
 
 ```bash
 # Endpoint URL
-az eventgrid topic show \
-  --name egt-learning-events \
-  --resource-group rg-learn-phase4 \
-  --query "endpoint" -o tsv
+az eventgrid topic show --name egt-learning-events --resource-group rg-learn-phase4 --query "endpoint" -o tsv
 
 # Access key
-az eventgrid topic key list \
-  --name egt-learning-events \
-  --resource-group rg-learn-phase4 \
-  --query "key1" -o tsv
+az eventgrid topic key list --name egt-learning-events --resource-group rg-learn-phase4 --query "key1" -o tsv
 ```
 
 **Copy both to `context/project-context.md`.**
@@ -135,11 +114,7 @@ az eventgrid topic key list \
 ## Step 8 — Create Event Hubs Namespace
 
 ```bash
-az eventhubs namespace create \
-  --name ehns-learning-YOURNAME \
-  --resource-group rg-learn-phase4 \
-  --location centralus \
-  --sku Basic
+az eventhubs namespace create --name ehns-learning-demo --resource-group rg-learn-phase4 --location centralus --sku Basic
 ```
 
 **Concepts:**
@@ -153,11 +128,7 @@ az eventhubs namespace create \
 ## Step 9 — Create Event Hub
 
 ```bash
-az eventhubs eventhub create \
-  --name telemetry-hub \
-  --namespace-name ehns-learning-YOURNAME \
-  --resource-group rg-learn-phase4 \
-  --partition-count 2
+az eventhubs eventhub create --name storefront-clickstream --namespace-name ehns-learning-demo --resource-group rg-learn-phase4 --partition-count 2
 ```
 
 `--partition-count 2` = two parallel lanes for processing. More partitions = more throughput.
@@ -167,11 +138,7 @@ az eventhubs eventhub create \
 ## Step 10 — Get Event Hubs Connection String
 
 ```bash
-az eventhubs namespace authorization-rule keys list \
-  --resource-group rg-learn-phase4 \
-  --namespace-name ehns-learning-YOURNAME \
-  --name RootManageSharedAccessKey \
-  --query "primaryConnectionString" -o tsv
+az eventhubs namespace authorization-rule keys list --resource-group rg-learn-phase4 --namespace-name ehns-learning-demo --name RootManageSharedAccessKey --query "primaryConnectionString" -o tsv
 ```
 
 **Copy to `context/project-context.md`.**
