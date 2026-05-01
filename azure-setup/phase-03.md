@@ -48,11 +48,7 @@ az group create --name rg-learn-phase3 --location centralus
 Functions runtime requires a storage account for coordination.
 
 ```bash
-az storage account create \
-  --name stfunclearningYOURNAME \
-  --resource-group rg-learn-phase3 \
-  --location centralus \
-  --sku Standard_LRS
+az storage account create --name stfunclearning001 --resource-group rg-learn-phase3 --location centralus --sku Standard_LRS
 ```
 
 ---
@@ -60,22 +56,13 @@ az storage account create \
 ## Step 3 — Create Queue and Blob Container for Demos
 
 ```bash
-STORAGE_KEY=$(az storage account keys list \
-  --resource-group rg-learn-phase3 \
-  --account-name stfunclearningYOURNAME \
-  --query "[0].value" -o tsv)
+$STORAGE_KEY=$(az storage account keys list --resource-group rg-learn-phase3 --account-name stfunclearning001 --query "[0].value" -o tsv)
 
 # Queue for Queue trigger demo
-az storage queue create \
-  --name task-queue \
-  --account-name stfunclearningYOURNAME \
-  --account-key $STORAGE_KEY
+az storage queue create --name task-queue --account-name stfunclearning001 --account-key $STORAGE_KEY
 
 # Container for Blob trigger demo
-az storage container create \
-  --name trigger-uploads \
-  --account-name stfunclearningYOURNAME \
-  --account-key $STORAGE_KEY
+az storage container create --name trigger-uploads --account-name stfunclearning001 --account-key $STORAGE_KEY
 
 echo "Queue and container created"
 ```
@@ -85,9 +72,7 @@ echo "Queue and container created"
 ## Step 4 — Get Storage Connection String
 
 ```bash
-az storage account show-connection-string \
-  --resource-group rg-learn-phase3 \
-  --name stfunclearningYOURNAME -o tsv
+az storage account show-connection-string --resource-group rg-learn-phase3 --name stfunclearning001 -o tsv
 ```
 
 **Copy to `context/project-context.md`.**
@@ -97,14 +82,7 @@ az storage account show-connection-string \
 ## Step 5 — Create Function App (Consumption Plan — Free)
 
 ```bash
-az functionapp create \
-  --name func-taskprocessing-YOURNAME \
-  --resource-group rg-learn-phase3 \
-  --storage-account stfunclearningYOURNAME \
-  --consumption-plan-location centralus \
-  --runtime dotnet-isolated \
-  --runtime-version 8 \
-  --functions-version 4
+az functionapp create --name func-taskprocessing-demo --resource-group rg-learn-phase3 --storage-account stfunclearning001 --consumption-plan-location centralus --runtime dotnet-isolated --runtime-version 8 --functions-version 4
 ```
 
 **Consumption plan:**
@@ -163,4 +141,6 @@ Start Phase 3 — create the Azure Functions project with all trigger types
 
 ```bash
 az group delete --name rg-learn-phase3 --yes --no-wait
+npm uninstall -g azure-functions-core-tools azurite
+
 ```

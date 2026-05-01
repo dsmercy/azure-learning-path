@@ -1,0 +1,443 @@
+{
+  "info": {
+    "name": "Phase 03 — Azure Functions",
+    "_postman_id": "azure-learning-phase-03",
+    "description": "Tests for all Azure Functions in Phase 03 (TaskProcessing.Functions).\n\nBefore running:\n1. Start the Functions host: `func start` in the project folder\n2. Set `baseUrl` to `http://localhost:7071` for local, or your Azure Function App URL for cloud\n3. For admin endpoints, paste the master key into `masterKey` (shown in host startup logs)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:7071",
+      "type": "string",
+      "description": "Change to your Azure Function App URL when testing deployed functions"
+    },
+    {
+      "key": "masterKey",
+      "value": "",
+      "type": "string",
+      "description": "Host master key — shown in func start logs or Azure Portal > Function App > App keys"
+    },
+    {
+      "key": "orchestrationStatusUrl",
+      "value": "",
+      "type": "string",
+      "description": "Auto-populated by the Start Orchestration test script"
+    }
+  ],
+  "item": [
+    {
+      "name": "HTTP Triggers",
+      "item": [
+        {
+          "name": "Get Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "status"]
+            },
+            "description": "Health check. Returns 200 with host time. No auth required."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Body contains Functions are running', () =>",
+                  "    pm.expect(pm.response.text()).to.include('Functions are running'));",
+                  "pm.test('Body contains UTC timestamp', () =>",
+                  "    pm.expect(pm.response.text()).to.match(/\\d{4}-\\d{2}-\\d{2}T/));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Task — valid",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/tasks",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "tasks"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Process monthly report\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Creates a task. Returns 201 with server-generated TaskId, the Title, and EnqueuedAt."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 201', () => pm.response.to.have.status(201));",
+                  "const body = pm.response.json();",
+                  "pm.test('taskId is a non-empty string', () =>",
+                  "    pm.expect(body.taskId).to.be.a('string').and.not.empty);",
+                  "pm.test('title matches request', () =>",
+                  "    pm.expect(body.title).to.eql('Process monthly report'));",
+                  "pm.test('enqueuedAt is present', () =>",
+                  "    pm.expect(body.enqueuedAt).to.be.a('string'));",
+                  "pm.test('taskId looks like a GUID', () =>",
+                  "    pm.expect(body.taskId).to.match(/^[0-9a-f-]{36}$/i));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Task — missing title (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/tasks",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "tasks"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Omits title — expect 400 Bad Request with 'title is required'."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Error message present', () =>",
+                  "    pm.expect(pm.response.text()).to.include('title is required'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Task — whitespace title (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/tasks",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "tasks"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"   \"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Whitespace-only title — IsNullOrWhiteSpace guard should return 400."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 400', () => pm.response.to.have.status(400));",
+                  "pm.test('Error message present', () =>",
+                  "    pm.expect(pm.response.text()).to.include('title is required'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Create Task — empty body (400)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/tasks",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "tasks"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Completely empty body — deserializes to null, returns 400."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 400', () => pm.response.to.have.status(400));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Durable Orchestration",
+      "description": "Durable Functions follow a start → poll pattern. Run 'Start Orchestration' first — it auto-saves the status URL. Then run 'Check Orchestration Status' until runtimeStatus is 'Completed'.",
+      "item": [
+        {
+          "name": "Start Orchestration",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "text/plain" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/orchestrate",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "orchestrate"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "GenerateMonthlyReport"
+            },
+            "description": "Starts the TaskOrchestrator durable workflow. The test script auto-saves statusQueryGetUri into the orchestrationStatusUrl variable."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 202', () => pm.response.to.have.status(202));",
+                  "const body = pm.response.json();",
+                  "pm.test('Has instanceId', () =>",
+                  "    pm.expect(body.id).to.be.a('string').and.not.empty);",
+                  "pm.test('Has statusQueryGetUri', () =>",
+                  "    pm.expect(body.statusQueryGetUri).to.be.a('string').and.include('/instances/'));",
+                  "pm.collectionVariables.set('orchestrationStatusUrl', body.statusQueryGetUri);",
+                  "console.log('Orchestration started. Instance ID:', body.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Check Orchestration Status",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{orchestrationStatusUrl}}",
+              "host": ["{{orchestrationStatusUrl}}"]
+            },
+            "description": "Polls the orchestration instance. runtimeStatus transitions: Pending → Running → Completed. 'output' will contain the final result string when done."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200 or 202', () =>",
+                  "    pm.expect([200, 202]).to.include(pm.response.code));",
+                  "const body = pm.response.json();",
+                  "pm.test('Has runtimeStatus', () =>",
+                  "    pm.expect(body.runtimeStatus).to.be.oneOf(['Pending','Running','Completed','Failed','Terminated']));",
+                  "console.log('runtimeStatus:', body.runtimeStatus);",
+                  "if (body.runtimeStatus === 'Completed') {",
+                  "    pm.test('Output is present', () =>",
+                  "        pm.expect(body.output).to.be.a('string').and.not.empty);",
+                  "    console.log('Output:', body.output);",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Start Orchestration — invalid (empty name)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "text/plain" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/orchestrate",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "orchestrate"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "description": "Empty task name — orchestration will start (202) but ValidateTask activity returns false, so the orchestrator short-circuits to a 'failed validation' result."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 202', () => pm.response.to.have.status(202));",
+                  "pm.collectionVariables.set('orchestrationStatusUrl', pm.response.json().statusQueryGetUri);",
+                  "console.log('Poll status to see ValidateTask rejection');"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Admin — Non-HTTP Triggers",
+      "description": "The Functions host admin API lets you manually fire timer and queue triggers without waiting for their schedule or a real queue message.\n\nRequires the master key in the `masterKey` variable.\n\nLocal dev: look for 'Host lock lease acquired' in func start output then check `.azure-functions-core-tools` secrets, or just leave masterKey empty — local admin API often works without it.",
+      "item": [
+        {
+          "name": "Admin: Host Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "x-functions-key", "value": "{{masterKey}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/host/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "host", "status"]
+            },
+            "description": "Returns the host runtime status, version, and loaded functions."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status 200', () => pm.response.to.have.status(200));",
+                  "const body = pm.response.json();",
+                  "pm.test('State is Running', () =>",
+                  "    pm.expect(body.state).to.eql('Running'));",
+                  "console.log('Host version:', body.version);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Admin: Fire CleanupTimer",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "x-functions-key", "value": "{{masterKey}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/functions/CleanupTimer",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "functions", "CleanupTimer"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"input\": null }",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Manually fires the CleanupTimer without waiting for the every-minute cron schedule. Check the terminal for 'Cleanup job completed' log."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Accepted 202', () => pm.response.to.have.status(202));",
+                  "console.log('Check func start terminal for: Cleanup job completed');"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Admin: Fire ProcessTaskQueue",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "x-functions-key", "value": "{{masterKey}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/functions/ProcessTaskQueue",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "functions", "ProcessTaskQueue"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"input\": \"{\\\"taskId\\\":\\\"admin-test-001\\\",\\\"title\\\":\\\"Admin injected task\\\",\\\"enqueuedAt\\\":\\\"2026-05-01T10:00:00Z\\\"}\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "Injects a synthetic TaskMessage directly into the queue trigger. The `input` field is the queue message as a JSON-encoded string. Check terminal for 'Task admin-test-001 processed successfully'."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Accepted 202', () => pm.response.to.have.status(202));",
+                  "console.log('Check func start terminal for: Task admin-test-001 processed successfully');"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Admin: Fire ProcessUploadedBlob (limited)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "x-functions-key", "value": "{{masterKey}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/admin/functions/ProcessUploadedBlob",
+              "host": ["{{baseUrl}}"],
+              "path": ["admin", "functions", "ProcessUploadedBlob"]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{ \"input\": null }",
+              "options": { "raw": { "language": "json" } }
+            },
+            "description": "NOTE: BlobTrigger cannot receive real blob data via the admin API — the function gets an empty stream. To properly test it, upload a file to the `trigger-uploads` container in Azure Storage Explorer or via Azure CLI:\n  az storage blob upload --account-name <account> --container-name trigger-uploads --name test.csv --file ./test.csv"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Accepted 202', () => pm.response.to.have.status(202));",
+                  "console.log('Note: blob stream will be empty. Upload a real file to trigger-uploads container for a full test.');"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
