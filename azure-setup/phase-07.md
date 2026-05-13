@@ -55,7 +55,7 @@ ACR names: lowercase letters and numbers only, 5–50 chars, globally unique.
 
 ```bash
 az acr create \
-  --name acrlearningYOURNAME \
+  --name acrlearningdemo \
   --resource-group rg-learn-phase7 \
   --sku Basic \
   --admin-enabled true
@@ -67,14 +67,14 @@ az acr create \
 
 ```bash
 ACR_USERNAME=$(az acr credential show \
-  --name acrlearningYOURNAME \
+  --name acrlearningdemo \
   --query username -o tsv)
 
 ACR_PASSWORD=$(az acr credential show \
-  --name acrlearningYOURNAME \
+  --name acrlearningdemo \
   --query "passwords[0].value" -o tsv)
 
-echo "ACR Login Server: acrlearningYOURNAME.azurecr.io"
+echo "ACR Login Server: acrlearningdemo.azurecr.io"
 echo "Username: $ACR_USERNAME"
 echo "Password: $ACR_PASSWORD"
 ```
@@ -99,7 +99,7 @@ az aks create \
   --resource-group rg-learn-phase7 \
   --node-count 1 \
   --node-vm-size Standard_B2s \
-  --attach-acr acrlearningYOURNAME \
+  --attach-acr acrlearningdemo \
   --generate-ssh-keys
 ```
 

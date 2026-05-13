@@ -189,8 +189,8 @@ az aks delete --name aks-learning --resource-group rg-learn-phase7 --yes --no-wa
 az group delete --name rg-learn-phase7 --yes --no-wait
 
 # Phase 8
-az webapp delete --resource-group rg-learn-phase1 --name taskmanager-api-qa-YOURNAME
-az webapp delete --resource-group rg-learn-phase1 --name taskmanager-api-prod-YOURNAME
+az webapp delete --resource-group rg-learn-phase1 --name taskmanager-api-qa-demo
+az webapp delete --resource-group rg-learn-phase1 --name taskmanager-api-prod-demo
 
 # Phase 9
 az group delete --name rg-learn-capstone --yes --no-wait

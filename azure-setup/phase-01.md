@@ -12,7 +12,7 @@
 Azure Subscription
 └── Resource Group: rg-learn-phase1
     ├── App Service Plan: plan-taskmanager-dev  (F1 Free)
-    ├── Web App: taskmanager-api-<yourname>     (runs your .NET API)
+    ├── Web App: taskmanager-api-<demo>     (runs your .NET API)
     └── SQL Server: sql-taskmanager-dev
         └── SQL Database: sqldb-tasks           (Serverless — auto-pauses)
 ```
@@ -122,7 +122,7 @@ az appservice plan create \
 
 ```bash
 az webapp create \
-  --name taskmanager-api-YOURNAME \
+  --name taskmanager-api-demo \
   --resource-group rg-learn-phase1 \
   --plan plan-taskmanager-dev \
   --runtime "DOTNETCORE:8.0"
@@ -130,7 +130,7 @@ az webapp create \
 
 After it completes, open your browser and visit:
 ```
-https://taskmanager-api-YOURNAME.azurewebsites.net
+https://taskmanager-api-demo.azurewebsites.net
 ```
 
 You should see: *"Your web app is running and waiting for your content."*
@@ -247,7 +247,7 @@ This makes it available to your deployed API as an environment variable.
 ```bash
 az webapp config connection-string set \
   --resource-group rg-learn-phase1 \
-  --name taskmanager-api-YOURNAME \
+  --name taskmanager-api-demo \
   --settings DefaultConnection="Server=tcp:sql-taskmanager-dev.database.windows.net,1433;Initial Catalog=sqldb-tasks;Persist Security Info=False;User ID=sqladmin;Password=AzLearn@2024!Secure;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;" \
   --connection-string-type SQLAzure
 ```

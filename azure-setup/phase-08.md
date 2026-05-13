@@ -52,18 +52,18 @@ You need separate App Services for Dev, QA, and Prod.
 ```bash
 # Reuse the Phase 1 plan (or create a new one)
 # Dev (reuse Phase 1 App Service)
-DEV_APP="taskmanager-api-YOURNAME"   # From Phase 1
+DEV_APP="taskmanager-api-demo"   # From Phase 1
 
 # QA
 az webapp create \
-  --name taskmanager-api-qa-YOURNAME \
+  --name taskmanager-api-qa-demo \
   --resource-group rg-learn-phase1 \
   --plan plan-taskmanager-dev \
   --runtime "DOTNETCORE:8.0"
 
 # Prod
 az webapp create \
-  --name taskmanager-api-prod-YOURNAME \
+  --name taskmanager-api-prod-demo \
   --resource-group rg-learn-phase1 \
   --plan plan-taskmanager-dev \
   --runtime "DOTNETCORE:8.0"
@@ -81,19 +81,19 @@ A publish profile is an XML file containing deployment credentials.
 # Dev
 az webapp deployment list-publishing-profiles \
   --resource-group rg-learn-phase1 \
-  --name taskmanager-api-YOURNAME \
+  --name taskmanager-api-demo \
   --xml
 
 # QA
 az webapp deployment list-publishing-profiles \
   --resource-group rg-learn-phase1 \
-  --name taskmanager-api-qa-YOURNAME \
+  --name taskmanager-api-qa-demo \
   --xml
 
 # Prod
 az webapp deployment list-publishing-profiles \
   --resource-group rg-learn-phase1 \
-  --name taskmanager-api-prod-YOURNAME \
+  --name taskmanager-api-prod-demo \
   --xml
 ```
 
@@ -122,16 +122,16 @@ Environments add deployment protection rules — most importantly, **manual appr
 
 2. Create **Development** environment:
    - No protection rules
-   - Add variable: `AZURE_WEBAPP_NAME` = `taskmanager-api-YOURNAME`
+   - Add variable: `AZURE_WEBAPP_NAME` = `taskmanager-api-demo`
 
 3. Create **QA** environment:
    - No protection rules
-   - Add variable: `AZURE_WEBAPP_NAME` = `taskmanager-api-qa-YOURNAME`
+   - Add variable: `AZURE_WEBAPP_NAME` = `taskmanager-api-qa-demo`
 
 4. Create **Production** environment:
    - ✅ Check **Required reviewers** → add yourself
    - ✅ Check **Wait timer** → set to 5 minutes (optional buffer)
-   - Add variable: `AZURE_WEBAPP_NAME` = `taskmanager-api-prod-YOURNAME`
+   - Add variable: `AZURE_WEBAPP_NAME` = `taskmanager-api-prod-demo`
 
 > Now when the pipeline reaches Production, it pauses and sends you an email asking: **"Approve this deployment?"**
 
@@ -217,6 +217,6 @@ Start Phase 8 — create the GitHub Actions workflow for Dev/QA/Prod deployment
 
 ```bash
 # Delete QA and Prod apps (Dev is Phase 1's app — keep if still learning)
-az webapp delete --resource-group rg-learn-phase1 --name taskmanager-api-qa-YOURNAME
-az webapp delete --resource-group rg-learn-phase1 --name taskmanager-api-prod-YOURNAME
+az webapp delete --resource-group rg-learn-phase1 --name taskmanager-api-qa-demo
+az webapp delete --resource-group rg-learn-phase1 --name taskmanager-api-prod-demo
 ```

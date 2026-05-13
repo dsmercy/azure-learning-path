@@ -41,7 +41,7 @@ Claude Code uses these values when generating config files.
 ```
 Resource Group  : rg-learn-phase1
 App Service Plan: plan-taskmanager-dev   (F1 — free)
-App Service Name: PLACEHOLDER            (e.g. taskmanager-api-yourname-001)
+App Service Name: PLACEHOLDER            (e.g. taskmanager-api-demo-001)
 App Service URL : https://PLACEHOLDER.azurewebsites.net
 SQL Server Name : sql-taskmanager-dev
 SQL Database    : sqldb-tasks

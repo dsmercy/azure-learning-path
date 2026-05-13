@@ -28,7 +28,7 @@ az appservice plan create \
   --sku F1 --is-linux
 
 az webapp create \
-  --name app-secured-YOURNAME \
+  --name app-secured-demo \
   --resource-group rg-learn-phase5 \
   --plan plan-phase5 \
   --runtime "DOTNETCORE:8.0"
@@ -40,7 +40,7 @@ az webapp create \
 
 ```bash
 az keyvault create \
-  --name kv-learning-YOURNAME \
+  --name kv-learning-demo \
   --resource-group rg-learn-phase5 \
   --location centralus \
   --enable-rbac-authorization true
@@ -61,7 +61,7 @@ MY_OID=$(az ad signed-in-user show --query id -o tsv)
 echo "My Object ID: $MY_OID"
 
 # Get Key Vault resource ID
-KV_ID=$(az keyvault show --name kv-learning-YOURNAME --query id -o tsv)
+KV_ID=$(az keyvault show --name kv-learning-demo --query id -o tsv)
 
 # Assign Key Vault Secrets Officer role to yourself
 az role assignment create \
@@ -85,24 +85,24 @@ echo "You can now add/read/delete secrets"
 ```bash
 # Store a fake database connection string
 az keyvault secret set \
-  --vault-name kv-learning-YOURNAME \
+  --vault-name kv-learning-demo \
   --name "SqlConnectionString" \
   --value "Server=tcp:fake-server.database.windows.net;..."
 
 # Store a fake external API key
 az keyvault secret set \
-  --vault-name kv-learning-YOURNAME \
+  --vault-name kv-learning-demo \
   --name "ExternalApiKey" \
   --value "sk-fake-key-12345abcde"
 
 # Store a JWT signing key
 az keyvault secret set \
-  --vault-name kv-learning-YOURNAME \
+  --vault-name kv-learning-demo \
   --name "JwtSigningKey" \
   --value "my-super-secret-jwt-key-change-in-production"
 
 # List secret names (values are hidden)
-az keyvault secret list --vault-name kv-learning-YOURNAME --query "[].name" -o table
+az keyvault secret list --vault-name kv-learning-demo --query "[].name" -o table
 ```
 
 **In Azure Portal:**
@@ -117,7 +117,7 @@ az keyvault secret list --vault-name kv-learning-YOURNAME --query "[].name" -o t
 
 ```bash
 az webapp identity assign \
-  --name app-secured-YOURNAME \
+  --name app-secured-demo \
   --resource-group rg-learn-phase5
 ```
 
@@ -129,7 +129,7 @@ This command:
 ```bash
 # Get the Managed Identity Object ID
 MI_OID=$(az webapp identity show \
-  --name app-secured-YOURNAME \
+  --name app-secured-demo \
   --resource-group rg-learn-phase5 \
   --query principalId -o tsv)
 
@@ -193,9 +193,9 @@ echo "Tenant ID: $TENANT_ID"
 
 ```bash
 az webapp config appsettings set \
-  --name app-secured-YOURNAME \
+  --name app-secured-demo \
   --resource-group rg-learn-phase5 \
-  --settings KeyVaultUrl="https://kv-learning-YOURNAME.vault.azure.net/"
+  --settings KeyVaultUrl="https://kv-learning-demo.vault.azure.net/"
 ```
 
 Your deployed API will read this setting and load all Key Vault secrets into its configuration automatically.
